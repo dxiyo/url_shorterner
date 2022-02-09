@@ -9,10 +9,11 @@
 <body>
     <h1>URL Shortener</h1>
     <p>Enter a URL to convert it into a short one.</p>
-    <form action="http://localhost:5000">
+    <form id="convertForm">
         <input type="text" id="urlInput" placeholder="Ex: google.com">
-        <button id="convertBtn">Convert</button>
+        <button type="submit">Convert</button>
     </form>
+    <p id="output"></p>
 
     <script src="index.js"></script>
 </body>
