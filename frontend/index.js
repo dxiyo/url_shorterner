@@ -1,9 +1,9 @@
 const convertForm = document.getElementById('convertForm')
+const output = document.querySelector('#output')
 
 convertForm.addEventListener('submit', (e) => {
     e.preventDefault()
     const urlInput = document.querySelector('#urlInput').value
-    const output = document.querySelector('#output')
 
     // if url field is empty
     if( urlInput === "" ) {
@@ -17,18 +17,27 @@ convertForm.addEventListener('submit', (e) => {
     }
 
     // send the url to the backend
-    fetch('http://localhost:5000/', {
-        method: "POST",
-        mode: 'cors',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ url: urlInput })
-    })
-    .then( res => res.json() )
-    .then( data => console.log("this is the data: ", data) )
+    sendUrlToBackEnd(urlInput)
 
 })
+
+// returns a DOM table that has all the links
+const showLinks = async () => {
+  const response = await fetch('http://localhost:5000/all')
+  const links = await response.json()
+  
+  let outputHtml = '<table> <tr> <th>Short Link</th> <th>Long Link</th> </tr>'
+
+  for( const link of links ) {
+    outputHtml += `<tr> <td>${link.shortLink}</td> <td>${link.longLink}</td> </tr>`
+  }
+
+  outputHtml += '</table>'
+  
+  return outputHtml
+}
+// updates the DOM table
+const updateOutputTable = async () => output.innerHTML = await showLinks()
 
 const isValidURL = url => {
     // Author: Diego Perini
@@ -79,3 +88,22 @@ const isValidURL = url => {
 
     return urlRegex.test(url)
 }
+
+const sendUrlToBackEnd = async url => {
+  // post fetch settings
+  const settings = {
+    method: "POST",
+    mode: 'cors',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ url })
+  }
+  const response = await fetch('http://localhost:5000/', settings)
+  const data = await response.json()
+  console.log("this is the data: ", data)
+  updateOutputTable()
+}
+
+// initially fetch the links to show on the table
+updateOutputTable()
