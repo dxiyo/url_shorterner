@@ -1,13 +1,6 @@
 import redis from '../models/database.js'
 import Commander from 'ioredis'
 
-const redisDemo = async () => {
-    // const reply = await redis.hset('links:google', 'longLink', 'https://google.com')
-    const reply = await redis.hget('links:google', 'longLink')
-    console.log(reply)
-};
-
-// redisDemo();
 const commander = new Commander()
 
 export const addLink = async (req, res) => {
@@ -18,6 +11,8 @@ export const addLink = async (req, res) => {
     console.log(reply)
 }
 
-// commander.keyType()
-
-// console.log(commander.getBuiltinCommands())
+export const getLink = async (req, res) => {
+    const shortLink = req.params.url
+    const reply = await redis.hget(`links:${shortLink}`, 'longLink')
+    res.redirect(reply)
+}
