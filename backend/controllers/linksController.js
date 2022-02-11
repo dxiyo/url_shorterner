@@ -1,18 +1,36 @@
-import redis from '../models/database.js'
-import Commander from 'ioredis'
-
-const commander = new Commander()
+import redis, { storeAllLinksInArrayOfObjects } from '../models/database.js'
+import { addDomainToSet, getAllDomains, setLinkHash, isMemberOfDomainSet, getLinkHash } from '../models/database.js'
 
 export const addLink = async (req, res) => {
     const link = req.body.url
     // takes only the domain name from the link
-    const domainName = link.split('.')[0].split('//')[1]
-    const reply = await redis.hset(`links:${domainName}`, 'longLink', link)
-    console.log(reply)
+    const domain = link.split('.')[0].split('//')[1]
+
+    if( await isMemberOfDomainSet(domain) === 1) {
+        res.json({
+            message: "this link is already inserted."
+        })
+        return
+    }
+    addDomainToSet(domain)
+    
+    const reply = await setLinkHash(domain, link)
+    
+    res.json({
+        message: "link added successfuly!",
+        link
+    })
 }
 
+// redirects the short link to the real link
 export const getLink = async (req, res) => {
-    const shortLink = req.params.url
-    const reply = await redis.hget(`links:${shortLink}`, 'longLink')
-    res.redirect(reply)
+    const domain = req.params.url
+    const link = await getLinkHash(domain)
+    res.redirect(link)
+}
+
+// returns all links
+export const getAllLinks = async (req, res) => {
+    const links = await storeAllLinksInArrayOfObjects()
+    res.json(links)
 }
