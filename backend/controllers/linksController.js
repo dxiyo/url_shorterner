@@ -1,10 +1,14 @@
-import redis, { storeAllLinksInArrayOfObjects } from '../models/database.js'
-import { addDomainToSet, getAllDomains, setLinkHash, isMemberOfDomainSet, getLinkHash } from '../models/database.js'
+// import redis, { storeAllLinksInArrayOfObjects } from '../models/database.js'
+import { addDomainToSet, getAllDomains, setLinkHash, isMemberOfDomainSet, getLinkHash, storeAllLinksInArrayOfObjects } from '../models/database.js'
+import * as Links from '../utilities/index.js'
 
 export const addLink = async (req, res) => {
     const link = req.body.url
-    // takes only the domain name from the link
-    const domain = link.split('.')[0].split('//')[1]
+
+    const subDomain = Links.hasSubDomain(link) ? Links.getDomain(link) : ''
+    const subFolders = Links.hasSubFolders(link) ? Links.getSubFolderInitials(link) : ''
+    // if there's no subdomain or subfolder, takes only the domain name from the link. if there is either a subdomain or a subfolder, only use the initial of the domain.
+    const domain = subDomain + Links.getDomain(link) + subFolders
 
     if( await isMemberOfDomainSet(domain) === 1) {
         res.json({

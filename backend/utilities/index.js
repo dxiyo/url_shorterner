@@ -1,14 +1,3 @@
-export const makeShortLink = length => {
-    let result = ''
-    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    let charactersLength = characters.length
-    for ( let i = 0; i < length; i++ ) {
-        result += characters.charAt( Math.floor( Math.random() * charactersLength ) )
-    }
-
-    return result
-}
-
 export const cutHTTP = string => {
     let regex = /[a-zA-Z]+:\/\//i
     return string.split(regex).join('')
@@ -24,7 +13,13 @@ export const getDomain = string => {
     }
 
     const domain = stringWithoutHTTP.split('.')[ indexOfDomain ]
-    return domain
+
+    // if there's either a subdomain or a subfolder, return only the initial of the domain
+    if( !hasSubDomain(string) && !hasSubFolders(string) ) {
+        return domain
+    } else {
+        return domain.charAt(0)
+    }
 }
 
 export const hasSubDomain = string => {
@@ -52,3 +47,13 @@ export const getSubFolders = string => {
     const subFolders = stringArr[ stringArr.length - 1]
     return subFolders
 }
+
+export const getSubFolderInitials = string => {
+    let subfolders = getSubFolders(string)
+    let initials = ''
+    const subFoldersArr = subfolders.split('/')
+    subFoldersArr.forEach( subF => initials += subF.charAt(0) )
+    return initials
+}
+
+console.log( getSubFolders('http://blog.example.com/subfolder/blog-post') )
