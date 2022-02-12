@@ -36,6 +36,12 @@ export const getLink = async (req, res) => {
     res.redirect(link)
 }
 
+export const getLinkStats = async (req, res) => {
+    const shortLink = req.params.url
+    const stats = await DB.getLinkHashStats(shortLink)
+    res.json( {...stats, shortLink} )
+}
+
 // returns all links
 export const getAllLinks = async (req, res) => {
     const links = await DB.storeAllLinksInArrayOfObjects()

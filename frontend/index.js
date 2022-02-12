@@ -3,6 +3,7 @@ const output = document.querySelector('#output')
 
 convertForm.addEventListener('submit', (e) => {
     e.preventDefault()
+    const urlInputElem = document.querySelector('#urlInput')
     const urlInput = document.querySelector('#urlInput').value
 
     // if url field is empty
@@ -19,6 +20,7 @@ convertForm.addEventListener('submit', (e) => {
     // send the url to the backend
     sendUrlToBackEnd(urlInput)
 
+    urlInputElem.value = ''
 })
 
 // returns a DOM table that has all the links
@@ -29,7 +31,7 @@ const showLinks = async () => {
   let outputHtml = '<table> <tr> <th>Short Link</th> <th>Long Link</th> </tr>'
 
   for( const link of links ) {
-    outputHtml += `<tr> <td>${link.shortLink}</td> <td>${link.longLink}</td> </tr>`
+    outputHtml += `<tr> <td><a href="${link.shortLink}">${link.shortLink}</a></td> <td>${link.longLink}</td> </tr>`
   }
 
   outputHtml += '</table>'

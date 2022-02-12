@@ -22,8 +22,10 @@ export const setLinkHash = async ( shortLink, link ) => await redis.hmset(shortL
 // gets a specific hash (again like an object) by the id and asks for the key you want (there's only longLink in these objects anyway)
 export const getLinkHash = async shortLink => await redis.hget(shortLink, 'longLink')
 
+export const getLinkHashStats = async shortLink => await redis.hgetall(shortLink)
+
 // increment the visits
-export const incrementLinkVisits = async shortLink => await redis.hincrby(shortLink, visits, 1)
+export const incrementLinkVisits = async shortLink => await redis.hincrby(shortLink, 'visits', 1)
 
 // as far as i can tell, redis doesn't have the ability to store an array of objects, or a set of hashes more accurately. this function creates that. it loops over the shortLink set and uses the name of each item to get the hash with the same id name. it pushes the hash and the shortLink name as an object into an array and returns a full array of objects.
 export const storeAllLinksInArrayOfObjects = async () => {

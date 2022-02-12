@@ -1,15 +1,17 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { addLink, getAllLinks, getLink } from '../controllers/linksController.js'
+import * as LinksController from '../controllers/linksController.js'
 
 const router = express.Router()
 
 const bodyParserJson = bodyParser.json()
 
-router.post('/', bodyParserJson, addLink)
+router.post('/', bodyParserJson, LinksController.addLink)
 
-router.get('/all', getAllLinks)
-router.get('/:url', getLink)
+router.get('/all', LinksController.getAllLinks)
+router.get('/:url/stats', LinksController.getLinkStats)
+router.get('/:url', LinksController.getLink)
+
  
 
 
