@@ -36,6 +36,12 @@ export const getSubDomain = string => {
     return stringWithoutHTTP.split(regex).join('')
 }
 
+export const getSubDomainInitial = string => {
+    const subDomain = getSubDomain(string)
+
+    return subDomain.charAt(0)
+}
+
 export const hasSubFolders = string => {
     let regex = /([a-zA-Z]+(\.[a-zA-Z]+)+)\/[a-zA-Z]+/i
     return regex.test(string)
@@ -55,5 +61,3 @@ export const getSubFolderInitials = string => {
     subFoldersArr.forEach( subF => initials += subF.charAt(0) )
     return initials
 }
-
-console.log( getSubFolders('http://blog.example.com/subfolder/blog-post') )
